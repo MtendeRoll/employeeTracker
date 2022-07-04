@@ -1,0 +1,24 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "This is a command-line application that manages a company's employee database, using Node.js, Inquirer, and MySQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MtendeRoll/employeeTracker.git"
+  },
+  "author": "Mtende Roll",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MtendeRoll/employeeTracker/issues"
+  },
+  "homepage": "https://github.com/MtendeRoll/employeeTracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^9.0.0",
+    "mysql2": "^2.3.3"
+  }
+}
