@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const query = require("./server.js");
 const { createPromptModule } = require("inquirer");
-//const ExpandPrompt = require("inquirer/lib/prompts/expand");
+const ExpandPrompt = require("inquirer/lib/prompts/expand");
 
 // Function to start the application
 function promptQuestions() {
@@ -11,22 +11,12 @@ function promptQuestions() {
       type: "list",
       name: "firstQuestion",
       message: "What would you like to do?",
-      choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Create Employee", "Create Role", "Create Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
+      choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Add Employee", "Add Role", "Add Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
     })
     .then(async function (answer) {
       switch (answer.todo) {
         case "View All Employees":
           await query.tableLogEmployees();
-          promptQuestions();
-          break;
-
-        case "View All departments":
-          console.table(await query.getDepartments());
-          promptQuestions();
-          break;
-
-        case "View All Roles":
-          await query.tableLogRoles();
           promptQuestions();
           break;
 
@@ -43,6 +33,16 @@ function promptQuestions() {
               await query.tableLogEmployees(answers.manager_id);
               start();
             });
+          break;
+
+        case "View All Roles":
+          await query.tableLogRoles();
+          promptQuestions();
+          break;
+
+        case "View All departments":
+          console.table(await query.getDepartments());
+          promptQuestions();
           break;
 
         case "Add Employee":
@@ -124,43 +124,27 @@ function promptQuestions() {
     });
 }
 
-// Department Questions
-const departmentQuestions = [
-  {
-    type: "input",
-    name: "departmentName",
-    message: "What is the name of the department?",
-    validate: (nameInput) => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log("Please enter the department's name!");
-        return false;
-      }
-    },
-  },
-];
-
-const updateEmployeeManagerQuestions = [
-  {
-    name: "employee_id",
-    type: "list",
-    message: "Which employee would you like to update?",
-    choices: employeeChoices,
-  },
-  {
-    name: "manager_id",
-    type: "list",
-    message: "Who is the employee's new manager?",
-    choices: employeeChoices,
-  },
-];
-
 async function promptDepartment() {
-  inquirer.prompt(departmentQuestions).then(async function (answers) {
-    await query.createDepartment(answers);
-    promptQuestions();
-  });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "departmentName",
+        message: "What is the name of the department?",
+        validate: (nameInput) => {
+          if (nameInput) {
+            return true;
+          } else {
+            console.log("Please enter the department's name!");
+            return false;
+          }
+        },
+      },
+    ])
+    .then(async function (answers) {
+      await query.createDepartment(answers);
+      promptQuestions();
+    });
 }
 
 async function promptEmployee() {
@@ -224,21 +208,6 @@ async function promptEmployee() {
     });
 }
 
-const updateEmployeeQuestions = [
-  {
-    name: "employee_id",
-    type: "list",
-    message: "Which employee's role would you like to update?",
-    choices: employeeChoices,
-  },
-  {
-    name: "role_id",
-    type: "list",
-    message: "What is the employee's new role?",
-    choices: roleChoices,
-  },
-];
-
 async function promptRole() {
   let departmentChoices = await getDepartmentChoices();
 
@@ -276,19 +245,49 @@ async function promptRole() {
 async function promptEmployeeUpdate() {
   let employeeChoices = await getEmployeeChoices();
   let roleChoices = await getRoleChoices();
-  inquirer.prompt(updateEmployeeQuestions).then(async function (answers) {
-    await query.updateEmployee({ id: answers.employee_id }, { role_id: answers.role_id });
-    promptQuestions();
-  });
+  inquirer
+    .prompt([
+      {
+        name: "employee_id",
+        type: "list",
+        message: "Which employee's role would you like to update?",
+        choices: employeeChoices,
+      },
+      {
+        name: "role_id",
+        type: "list",
+        message: "What is the employee's new role?",
+        choices: roleChoices,
+      },
+    ])
+    .then(async function (answers) {
+      await query.updateEmployee({ id: answers.employee_id }, { role_id: answers.role_id });
+      promptQuestions();
+    });
 }
 
 async function promptEmployeeManagerUpdate() {
   let employeeChoices = await getEmployeeChoices();
 
-  inquirer.prompt(updateEmployeeManagerQuestions).then(async function (answers) {
-    await query.updateEmployee({ id: answers.employee_id }, { manager_id: answers.manager_id });
-    promptQuestions();
-  });
+  inquirer
+    .prompt([
+      {
+        name: "employee_id",
+        type: "list",
+        message: "Which employee would you like to update?",
+        choices: employeeChoices,
+      },
+      {
+        name: "manager_id",
+        type: "list",
+        message: "Who is the employee's new manager?",
+        choices: employeeChoices,
+      },
+    ])
+    .then(async function (answers) {
+      await query.updateEmployee({ id: answers.employee_id }, { manager_id: answers.manager_id });
+      promptQuestions();
+    });
 }
 
 //A helper function that calls query.getEmployees() and uses that data to create an array of employee choices to be used in inquirer lists.

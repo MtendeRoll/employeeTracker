@@ -1,11 +1,11 @@
 const mysql = require("mysql2");
+const cTable = require("console.table");
 
 // Connect to database
 var db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
-    port: 4003,
     password: "$D8G9h4Y&=$X3?_w",
     database: "staff_db",
   },
@@ -35,11 +35,11 @@ async function getEmployees() {
 async function getEmployeesByDepartment(departmentID) {
   let promise = new Promise((resolve, reject) => {
     db.query(
-      `SELECT first_name, last_name, role.title AS role, salary
+      `SELECT first_name, last_name, roles.title AS roles, salary
       FROM employee
-      LEFT JOIN role
-      ON employee.role_id = role.id
-      WHERE role.department_id = ${departmentID}`,
+      LEFT JOIN roles
+      ON employee.roles_id = roles.id
+      WHERE roles.department_id = ${departmentID}`,
       function (err, data) {
         if (err) throw err;
         resolve(data);
@@ -50,10 +50,10 @@ async function getEmployeesByDepartment(departmentID) {
   return await promise;
 }
 
-// Function to get all roles from role table in staff_db
+// Function to get all roles from roles table in staff_db
 async function getRoles() {
   let promise = new Promise((resolve, reject) => {
-    db.query("SELECT * FROM role", function (err, data) {
+    db.query("SELECT * FROM roles", function (err, data) {
       if (err) throw err;
       resolve(data);
     });
@@ -101,12 +101,12 @@ async function tableLogEmployees(manager_id) {
   }
   let promise = new Promise((resolve, reject) => {
     db.query(
-      `SELECT E1.id AS id, E1.first_name AS first_name, E1.last_name AS last_name, role.title, E2.first_name AS manager_first_name, E2.last_name AS manager_last_name
+      `SELECT E1.id AS id, E1.first_name AS first_name, E1.last_name AS last_name, roles.title, E2.first_name AS manager_first_name, E2.last_name AS manager_last_name
       FROM employee E1
       LEFT JOIN employee E2
       ON E1.manager_id = E2.id
-      LEFT JOIN role
-      ON E1.role_id = role.id
+      LEFT JOIN roles
+      ON E1.roles_id = roles.id
       ${managerWhere}
       `,
       function (err, data) {
@@ -118,14 +118,14 @@ async function tableLogEmployees(manager_id) {
   console.table(await promise);
 }
 
-//A function to table log each role in role table in a readable way
+//A function to table log each role in roles table in a readable way
 async function tableLogRoles() {
   let promise = new Promise((resolve, reject) => {
     db.query(
       `SELECT title, salary, name AS department
-      FROM role
+      FROM roles
       LEFT JOIN department
-      ON role.department_id = department.id`,
+      ON roles.department_id = department.id`,
       function (err, data) {
         if (err) throw err;
         resolve(data);
@@ -135,11 +135,11 @@ async function tableLogRoles() {
   console.table(await promise);
 }
 
-// Function to insert new role into role table
+// Function to insert new role into roles table
 async function createRole(roleObj) {
   let promise = new Promise((resolve, reject) => {
     db.query(
-      "INSERT INTO role SET ?",
+      "INSERT INTO roles SET ?",
       {
         title: roleObj.title,
         salary: roleObj.salary,
@@ -197,10 +197,10 @@ async function deleteEmployee(empID) {
   return await promise;
 }
 
-// Function to delete a role from role table
+// Function to delete a role from roles table
 async function deleteRole(roleID) {
   let promise = new Promise((resolve, reject) => {
-    db.query("DELETE FROM role WHERE ?", [{ id: roleID }], function (err) {
+    db.query("DELETE FROM roles WHERE ?", [{ id: roleID }], function (err) {
       if (err) throw err;
       resolve();
     });
