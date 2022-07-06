@@ -1,11 +1,21 @@
-DROP DATABASE IF EXISTS staff_db;
-CREATE DATABASE staff_db;
-
-USE staff_db;
-
 DROP TABLE IF EXISTS employee;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS department;
+
+CREATE TABLE department (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(30) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE roles (
+  id INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  department_id INT NOT NULL,
+  PRIMARY KEY (id)
+);
+
 
 CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT,
@@ -16,16 +26,3 @@ CREATE TABLE employee (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE roles (
-  id INT NOT NULL AUTO_INCREMENT,
-  title VARCHAR(30) NOT NULL,
-  salary DECIMAL(15,2) NOT NULL,
-  department_id INT NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE department (
-  id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(30) NOT NULL,
-  PRIMARY KEY (id)
-);
