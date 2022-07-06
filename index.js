@@ -4,7 +4,7 @@ const query = require("./server.js");
 const { createPromptModule } = require("inquirer");
 const ExpandPrompt = require("inquirer/lib/prompts/expand");
 
-// Function prompt the application
+// Function to start the application
 function promptQuestions() {
   inquirer
     .prompt({
@@ -13,14 +13,15 @@ function promptQuestions() {
       message: "What would you like to do?",
       choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Add Employee", "Add Role", "Add Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
     })
-    .then(function (answer) {
-      switch (answer.todo) {
+    .then(async function (answer) {
+      switch (answer.firstQuestion) {
         case "View All Employees":
-          query.tableEmployees();
+          await query.tableLogEmployees();
+          promptQuestions();
           break;
 
         case "View Employees by Manager":
-          let employeeChoices = getEmployeeChoices();
+          let employeeChoices = await getEmployeeChoices();
           inquirer
             .prompt({
               name: "manager_id",
@@ -28,17 +29,20 @@ function promptQuestions() {
               message: "Choose the manager who's employee list you'd like to see.",
               choices: employeeChoices,
             })
-            .then(function (answers) {
-              tableEmployees(answers.manager_id);
+            .then(async function (answers) {
+              await query.tableLogEmployees(answers.manager_id);
+              promptQuestions();
             });
           break;
 
         case "View All Roles":
-          query.tableRoles();
+          await query.tableLogRoles();
+          promptQuestions();
           break;
 
         case "View All departments":
-          query.getDepartments();
+          console.table(await query.getDepartments());
+          promptQuestions();
           break;
 
         case "Add Employee":
@@ -63,7 +67,7 @@ function promptQuestions() {
 
         //If user selects "Delete an Employee", prompt which employee they'd like to delete then call deleteEmployee() function passing that employee's id.
         case "Delete an Employee":
-          let deleteEmployeeChoices = getEmployeeChoices();
+          let deleteEmployeeChoices = await getEmployeeChoices();
           inquirer
             .prompt({
               name: "id",
@@ -71,14 +75,15 @@ function promptQuestions() {
               message: "Which employee would you like to delete?",
               choices: deleteEmployeeChoices,
             })
-            .then(function (answers) {
-              query.deleteEmployee(answers.id);
+            .then(async function (answers) {
+              await query.deleteEmployee(answers.id);
+              promptQuestions();
             });
           break;
 
         //If user selects "Delete a Role", prompt which role they'd like to delete then call deleteRole() function passing that role's id.
         case "Delete a Role":
-          let deleteRoleChoices = getRoleChoices();
+          let deleteRoleChoices = await getRoleChoices();
           inquirer
             .prompt({
               name: "id",
@@ -86,14 +91,15 @@ function promptQuestions() {
               message: "Which Role would you like to delete?",
               choices: deleteRoleChoices,
             })
-            .then(function (answers) {
-              query.deleteRole(answers.id);
+            .then(async function (answers) {
+              await query.deleteRole(answers.id);
+              promptQuestions();
             });
           break;
 
         //If user selects "Delete a Department", prompt which department they'd like to delete then call deleteDepartment() function passing that department's id.
         case "Delete a Department":
-          let deleteDepartmentChoices = getDepartmentChoices();
+          let deleteDepartmentChoices = await getDepartmentChoices();
           inquirer
             .prompt({
               name: "id",
@@ -101,13 +107,14 @@ function promptQuestions() {
               message: "Which Department would you like to delete?",
               choices: deleteDepartmentChoices,
             })
-            .then(function (answers) {
-              query.deleteDepartment(answers.id);
+            .then(async function (answers) {
+              await query.deleteDepartment(answers.id);
+              promptQuestions();
             });
           break;
 
         case "View total utilized budget of a Department":
-          tableLogTotal();
+          await tableLogTotal();
           break;
 
         case "Quit":
@@ -117,7 +124,7 @@ function promptQuestions() {
     });
 }
 
-const promptDepartment = () => {
+async function promptDepartment() {
   inquirer
     .prompt([
       {
@@ -134,14 +141,15 @@ const promptDepartment = () => {
         },
       },
     ])
-    .then(function (answers) {
-      query.createDepartment(answers);
+    .then(async function (answers) {
+      await query.createDepartment(answers);
+      promptQuestions();
     });
-};
+}
 
-const promptEmployee = () => {
-  let employeeChoices = getEmployeeChoices();
-  let roleChoices = getRoleChoices();
+async function promptEmployee() {
+  let employeeChoices = await getEmployeeChoices();
+  let roleChoices = await getRoleChoices();
 
   inquirer
     .prompt([
@@ -168,7 +176,7 @@ const promptEmployee = () => {
         },
       },
       {
-        name: "role_id",
+        name: "roles_id",
         type: "list",
         message: "What is the employee's role?",
         choices: roleChoices,
@@ -194,13 +202,14 @@ const promptEmployee = () => {
         },
       },
     ])
-    .then(function (answers) {
-      query.createEmployee(answers);
+    .then(async function (answers) {
+      await query.createEmployee(answers);
+      promptQuestions();
     });
-};
+}
 
-const promptRole = () => {
-  let departmentChoices = getDepartmentChoices();
+async function promptRole() {
+  let departmentChoices = await getDepartmentChoices();
 
   inquirer
     .prompt([
@@ -227,14 +236,15 @@ const promptRole = () => {
         choices: departmentChoices,
       },
     ])
-    .then(function (answers) {
-      query.createRole(answers);
+    .then(async function (answers) {
+      await query.createRole(answers);
+      promptQuestions();
     });
-};
+}
 
-const promptEmployeeUpdate = () => {
-  let employeeChoices = getEmployeeChoices();
-  let roleChoices = getRoleChoices();
+async function promptEmployeeUpdate() {
+  let employeeChoices = await getEmployeeChoices();
+  let roleChoices = await getRoleChoices();
   inquirer
     .prompt([
       {
@@ -244,19 +254,20 @@ const promptEmployeeUpdate = () => {
         choices: employeeChoices,
       },
       {
-        name: "role_id",
+        name: "roles_id",
         type: "list",
         message: "What is the employee's new role?",
         choices: roleChoices,
       },
     ])
-    .then(function (answers) {
-      query.updateEmployee({ id: answers.employee_id }, { role_id: answers.role_id });
+    .then(async function (answers) {
+      await query.updateEmployee({ id: answers.employee_id }, { roles_id: answers.roles_id });
+      promptQuestions();
     });
-};
+}
 
-const promptEmployeeManagerUpdate = () => {
-  let employeeChoices = getEmployeeChoices();
+async function promptEmployeeManagerUpdate() {
+  let employeeChoices = await getEmployeeChoices();
 
   inquirer
     .prompt([
@@ -273,14 +284,15 @@ const promptEmployeeManagerUpdate = () => {
         choices: employeeChoices,
       },
     ])
-    .then(function (answers) {
-      query.updateEmployee({ id: answers.employee_id }, { manager_id: answers.manager_id });
+    .then(async function (answers) {
+      await query.updateEmployee({ id: answers.employee_id }, { manager_id: answers.manager_id });
+      promptQuestions();
     });
-};
+}
 
 //A helper function that calls query.getEmployees() and uses that data to create an array of employee choices to be used in inquirer lists.
-const getEmployeeChoices = () => {
-  let employees = query.getEmployees();
+async function getEmployeeChoices() {
+  let employees = await query.getEmployees();
   let employeeChoices = [];
   for (let employee of employees) {
     employeeChoices.push({
@@ -290,25 +302,25 @@ const getEmployeeChoices = () => {
   }
 
   return employeeChoices;
-};
+}
 
 //A helper function that calls query.getRoles() and uses that data to create an array of role choices to be used in inquirer lists.
-const getRoleChoices = () => {
-  let roles = query.getRoles();
+async function getRoleChoices() {
+  let rolesNew = await query.getRoles();
   let roleChoices = [];
-  for (let role of roles) {
+  for (let roles of rolesNew) {
     roleChoices.push({
-      name: role.title,
-      value: role.id,
+      name: roles.title,
+      value: roles.id,
     });
   }
 
   return roleChoices;
-};
+}
 
 //A helper function that calls query.getDepartments() and uses that data to create an array of department choices to be used in inquirer lists.
-const getDepartmentChoices = () => {
-  let departments = query.getDepartments();
+async function getDepartmentChoices() {
+  let departments = await query.getDepartments();
   let departmentChoices = [];
   for (let dept of departments) {
     departmentChoices.push({
@@ -318,12 +330,12 @@ const getDepartmentChoices = () => {
   }
 
   return departmentChoices;
-};
+}
 
 //A function that prompts the user for which department they'd like budget information on, console.table() is then called with employee's in that department
 //and a total of those employees' salaries is calculated and logged as well.
-const tableLogTotal = () => {
-  let departmentChoices = getDepartmentChoices();
+async function tableLogTotal() {
+  let departmentChoices = await getDepartmentChoices();
   inquirer
     .prompt({
       name: "id",
@@ -331,8 +343,8 @@ const tableLogTotal = () => {
       message: "For which Department would you like to see the total utilized budget?",
       choices: departmentChoices,
     })
-    .then(function (answers) {
-      let employees = query.getEmployeesByDepartment(answers.id);
+    .then(async function (answers) {
+      let employees = await query.getEmployeesByDepartment(answers.id);
 
       let total = 0;
       for (let emp of employees) {
@@ -344,6 +356,6 @@ const tableLogTotal = () => {
       console.log(`Total Budget Usage: $${total}`);
       promptQuestions();
     });
-};
+}
 
 promptQuestions();
