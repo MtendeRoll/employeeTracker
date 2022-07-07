@@ -40,7 +40,7 @@ function promptQuestions() {
           promptQuestions();
           break;
 
-        case "View All departments":
+        case "View All Departments":
           console.table(await query.getDepartments());
           promptQuestions();
           break;
