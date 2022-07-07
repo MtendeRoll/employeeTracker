@@ -1,8 +1,8 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const query = require("./server.js");
-const { createPromptModule } = require("inquirer");
-const ExpandPrompt = require("inquirer/lib/prompts/expand");
+// const { createPromptModule } = require("inquirer");
+// const ExpandPrompt = require("inquirer/lib/prompts/expand");
 
 // Function to start the application
 function promptQuestions() {
@@ -11,7 +11,7 @@ function promptQuestions() {
       type: "list",
       name: "firstQuestion",
       message: "What would you like to do?",
-      choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Add Employee", "Add Role", "Add Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
+      choices: ["View All Employees", "View Employees by Manager", "View All Roles", "View All Departments", "Add Employee", "Add Role", "Add Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
     })
     .then(async function (answer) {
       switch (answer.firstQuestion) {
@@ -41,8 +41,9 @@ function promptQuestions() {
           break;
 
         case "View All departments":
-          console.table(await query.getDepartments());
-          promptQuestions();
+          //console.table(await query.getDepartments());
+          viewAllDepartments();
+          //promptQuestions();
           break;
 
         case "Add Employee":
@@ -123,6 +124,16 @@ function promptQuestions() {
       }
     });
 }
+
+const viewAllDepartments = () => {
+  db.query("SELECT * FROM department;", (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+    //promptEnd();
+  });
+};
 
 async function promptDepartment() {
   inquirer

@@ -2,7 +2,7 @@ const mysql = require("mysql2");
 const cTable = require("console.table");
 
 // Connect to database
-var db = mysql.createConnection(
+const db = mysql.createConnection(
   {
     host: "localhost",
     user: "root",
@@ -65,6 +65,16 @@ async function getRoles() {
 async function getDepartments() {
   let promise = new Promise((resolve, reject) => {
     db.query("SELECT * FROM department", function (err, data) {
+      if (err) throw err;
+      resolve(data);
+    });
+  });
+  return await promise;
+}
+
+async function viewAllDepartments() {
+  let promise = new Promise((resolve, reject) => {
+    db.query(`SELECT * FROM department`, function (err, data) {
       if (err) throw err;
       resolve(data);
     });
@@ -231,6 +241,7 @@ exports.getEmployees = getEmployees;
 exports.getEmployeesByDepartment = getEmployeesByDepartment;
 exports.getRoles = getRoles;
 exports.getDepartments = getDepartments;
+exports.viewAllDepartments = viewAllDepartments;
 exports.tableLogEmployees = tableLogEmployees;
 exports.tableLogRoles = tableLogRoles;
 exports.createEmployee = createEmployee;
