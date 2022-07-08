@@ -7,7 +7,8 @@ This is a command-line application that manages a company's employee database, u
 - [Installation](#installation)
 - [Application Criteria](#application-criteria)
 - [Links](#links)
-- [Images](#walkthrough-video)
+- [Application Gif](#application-gif)
+- [Walk Through Video](#walkthrough-video)
 - [License](#license)
 
 ## Installation
@@ -16,6 +17,20 @@ The JSON file will have the necessary dependencies. type this in your command li
 
 ```
 npm i
+```
+
+```
+mysql -u root -p
+```
+
+```
+mysql source <sql files in db folder>
+```
+
+Start the application :
+
+```
+node index.js
 ```
 
 ## Application Criteria
@@ -42,11 +57,14 @@ GIVEN a command-line application that accepts user input:
 ## Links
 
 - [Github Repository](https://github.com/MtendeRoll/employeeTracker)
-- [Deployed Application using Website](https://mtenderoll.github.io/employeeTracker/)
+
+## Application Gif
+
+- ![Mock-Up](./assets/images/employeeTracker-demo.gif)
 
 ## Walkthrough Video
 
-[Video]()
+- [Video](https://drive.google.com/file/d/1cosiSZh6AyPHt75-3Chsp4XAbKJZYoqo/view)
 
 ## License
 
