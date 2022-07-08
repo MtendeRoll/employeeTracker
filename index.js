@@ -225,7 +225,7 @@ async function promptEmployee() {
     ])
     .then(async function (answers) {
       await query.createEmployee(answers);
-      console.log("---------ADDED", answers.first_name.last_name, " TO THE DATATBASE !----------");
+      console.log("---------ADDED EMPLOYEE TO THE DATATBASE !----------");
 
       promptQuestions();
     });
@@ -261,7 +261,7 @@ async function promptRole() {
     ])
     .then(async function (answers) {
       await query.createRole(answers);
-      console.log("---------ADDED", answers.title.salary, " TO THE DATATBASE !----------");
+      console.log("---------ADDED ROLE TO THE DATATBASE !----------");
       promptQuestions();
     });
 }
