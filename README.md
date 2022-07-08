@@ -43,7 +43,6 @@ GIVEN a command-line application that accepts user input:
 
 - [Github Repository](https://github.com/MtendeRoll/employeeTracker)
 - [Deployed Application using Website](https://mtenderoll.github.io/employeeTracker/)
-- [Deployed Application using local host](http://localhost:4003/index)
 
 ## Walkthrough Video
 

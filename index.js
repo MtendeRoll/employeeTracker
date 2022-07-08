@@ -1,8 +1,6 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const query = require("./server.js");
-const { createPromptModule } = require("inquirer");
-const ExpandPrompt = require("inquirer/lib/prompts/expand");
+const query = require("./lib/server.js");
 
 // Function to start the application
 function promptQuestions() {
