@@ -109,6 +109,7 @@ function promptQuestions() {
             })
             .then(async function (answers) {
               await query.deleteDepartment(answers.id);
+              console.log("----------- DEPARTMENT DELETED FROM DATABASE------------");
               promptQuestions();
             });
           break;
@@ -143,6 +144,7 @@ async function promptDepartment() {
     ])
     .then(async function (answers) {
       await query.createDepartment(answers);
+      console.log("---------ADDED", answers, " TO THE DATATBASE !----------");
       promptQuestions();
     });
 }
@@ -204,6 +206,8 @@ async function promptEmployee() {
     ])
     .then(async function (answers) {
       await query.createEmployee(answers);
+      console.log("---------ADDED", answers.first_name.last_name, " TO THE DATATBASE !----------");
+
       promptQuestions();
     });
 }
@@ -238,6 +242,7 @@ async function promptRole() {
     ])
     .then(async function (answers) {
       await query.createRole(answers);
+      console.log("---------ADDED", answers.title.salary, " TO THE DATATBASE !----------");
       promptQuestions();
     });
 }
@@ -262,6 +267,7 @@ async function promptEmployeeUpdate() {
     ])
     .then(async function (answers) {
       await query.updateEmployee({ id: answers.employee_id }, { roles_id: answers.roles_id });
+      console.log("---------UPDATED EMPLOYEE'S ROLE----------");
       promptQuestions();
     });
 }
@@ -286,6 +292,7 @@ async function promptEmployeeManagerUpdate() {
     ])
     .then(async function (answers) {
       await query.updateEmployee({ id: answers.employee_id }, { manager_id: answers.manager_id });
+      console.log("---------UPDATED EMPLOYEE'S MANAGER !----------");
       promptQuestions();
     });
 }
@@ -353,7 +360,7 @@ async function tableLogTotal() {
 
       total = total.toFixed(2);
       console.table(employees);
-      console.log(`Total Budget Usage: $${total}`);
+      console.log(`----------- THIS IS THE TOTAL BUDGET: $${total} ----------`);
       promptQuestions();
     });
 }

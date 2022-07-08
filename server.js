@@ -163,7 +163,7 @@ async function createDepartment(deptObj) {
     db.query(
       "INSERT INTO department SET ?",
       {
-        name: deptObj.department_name,
+        department_name: deptObj.department_name,
       },
       function (err) {
         if (err) throw err;
