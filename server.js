@@ -122,7 +122,7 @@ async function tableLogEmployees(manager_id) {
 async function tableLogRoles() {
   let promise = new Promise((resolve, reject) => {
     db.query(
-      `SELECT title, salary, name AS department
+      `SELECT title, salary, department_name AS department
       FROM roles
       LEFT JOIN department
       ON roles.department_id = department.id`,
@@ -161,7 +161,7 @@ async function createDepartment(deptObj) {
     db.query(
       "INSERT INTO department SET ?",
       {
-        name: deptObj.departmentName,
+        name: deptObj.department_name,
       },
       function (err) {
         if (err) throw err;

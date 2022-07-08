@@ -11,7 +11,7 @@ function promptQuestions() {
       type: "list",
       name: "firstQuestion",
       message: "What would you like to do?",
-      choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Add Employee", "Add Role", "Add Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
+      choices: ["View All Employees", "View All Roles", "View All Departments", "View Employees by Manager", "Add an Employee", "Add a Role", "Add a Department", "Update an Employee's Role", "Update an Employee's Manager", "Delete an Employee", "Delete a Role", "Delete a Department", "View total utilized budget of a Department", "Quit"],
     })
     .then(async function (answer) {
       switch (answer.firstQuestion) {
@@ -45,15 +45,15 @@ function promptQuestions() {
           promptQuestions();
           break;
 
-        case "Add Employee":
+        case "Add an Employee":
           promptEmployee();
           break;
 
-        case "Add Role":
+        case "Add a Role":
           promptRole();
           break;
 
-        case "Add Department":
+        case "Add a Department":
           promptDepartment();
           break;
 
@@ -129,7 +129,7 @@ async function promptDepartment() {
     .prompt([
       {
         type: "input",
-        name: "departmentName",
+        name: "department_name",
         message: "What is the name of the department?",
         validate: (nameInput) => {
           if (nameInput) {
@@ -324,7 +324,7 @@ async function getDepartmentChoices() {
   let departmentChoices = [];
   for (let dept of departments) {
     departmentChoices.push({
-      name: dept.name,
+      name: dept.department_name,
       value: dept.id,
     });
   }
