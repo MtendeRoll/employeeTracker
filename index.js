@@ -1,6 +1,27 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const query = require("./lib/server.js");
+const asciiartLogo = require("asciiart-logo");
+
+// Function to introduce the application
+introMsg = function () {
+  const introText = "This is a command-line application that manages a company's employee database, using Node.js, Inquirer, and MySQL";
+  console.log(
+    asciiartLogo({
+      name: "Employee Tracker",
+      font: "3D-ASCII",
+      lineChars: 10,
+      padding: 1,
+      margin: 2,
+      borderColor: "bold-cyan",
+      logoColor: "bold-cyan",
+      textColor: "bold-white",
+    })
+      .center(introText)
+      .render()
+  );
+  promptQuestions();
+};
 
 // Function to start the application
 function promptQuestions() {
@@ -363,4 +384,4 @@ async function tableLogTotal() {
     });
 }
 
-promptQuestions();
+introMsg();
